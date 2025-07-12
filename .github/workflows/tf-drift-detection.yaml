@@ -11,11 +11,12 @@ permissions:
   contents: read
   issues: write
 
-# env:
-  # TODO Add environment variables here to be used in the workflow
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 jobs:
-  terraform-plan:
+  terraform-drift-detection:
     runs-on: ubuntu-latest
     outputs:
       tfplanExitCode: ${{ steps.tf-plan.outputs.exitcode }}
