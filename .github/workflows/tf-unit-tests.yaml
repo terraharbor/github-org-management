@@ -8,7 +8,6 @@ permissions:
 
 jobs:
   terraform-unit-tests:
-    name: 'Terraform Unit Tests'
     runs-on: ubuntu-latest
     
     steps:
@@ -18,7 +17,7 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
 
-    - name: Run terraform init
+    - name: Initialize Terraform
       run: terraform init -backend=false
 
     - name: Validate Terraform code
