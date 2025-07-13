@@ -17,9 +17,9 @@ permissions:
 env:
   AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  TF_VAR_GITHUB_APP_ID: ${{ vars.TF_VAR_GITHUB_APP_ID }}
-  TF_VAR_GITHUB_APP_INSTALLATION_ID: ${{ vars.TF_VAR_GITHUB_APP_INSTALLATION_ID }}
-  TF_VAR_GITHUB_APP_PEM_FILE: ${{ secrets.TF_VAR_GITHUB_APP_PEM_FILE }}
+  TF_VAR_github_app_id: ${{ vars.TF_VAR_GITHUB_APP_ID }}
+  TF_VAR_github_app_installation_id: ${{ vars.TF_VAR_GITHUB_APP_INSTALLATION_ID }}
+  TF_VAR_github_app_pem_file: ${{ secrets.TF_VAR_GITHUB_APP_PEM_FILE }}
 
 jobs:
   terraform-plan:
