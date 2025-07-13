@@ -8,7 +8,7 @@ on:
     branches:
     - main
 
-# Special permissions required for OIDC authentication
+# Special permissions required for OIDC authentication.
 permissions:
   id-token: write
   contents: read
@@ -50,7 +50,10 @@ jobs:
       id: tf-plan
       env:
         GITHUB_TOKEN: "" # Unset GITHUB_TOKEN to avoid causing issues with the GitHub App authentication.
-        GITHUB_OWNER: "" # Unset GITHUB_OWNER to avoid causing issues with the GitHub App authentication.
+        GITHUB_OWNER: ${{ github.repository_owner }}
+        GITHUB_APP_ID: ${{ vars.TF_VAR_GITHUB_APP_ID }}
+        GITHUB_APP_INSTALLATION_ID: ${{ vars.TF_VAR_GITHUB_APP_INSTALLATION_ID }}
+        GITHUB_APP_PEM_FILE: ${{ secrets.TF_VAR_GITHUB_APP_PEM_FILE }}
       run: |
         export exitcode=0
         terraform plan -detailed-exitcode -no-color -out tfplan || export exitcode=$?
@@ -132,4 +135,8 @@ jobs:
     - name: Run Terraform Apply
       env:
         GITHUB_TOKEN: "" # Unset GITHUB_TOKEN to avoid causing issues with the GitHub App authentication.
+        GITHUB_OWNER: ${{ github.repository_owner }}
+        GITHUB_APP_ID: ${{ vars.TF_VAR_GITHUB_APP_ID }}
+        GITHUB_APP_INSTALLATION_ID: ${{ vars.TF_VAR_GITHUB_APP_INSTALLATION_ID }}
+        GITHUB_APP_PEM_FILE: ${{ secrets.TF_VAR_GITHUB_APP_PEM_FILE }}
       run: terraform apply -auto-approve tfplan
