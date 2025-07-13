@@ -11,10 +11,6 @@ permissions:
   contents: read
   issues: write
 
-env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
 jobs:
   terraform-drift-detection:
     runs-on: ubuntu-latest
@@ -32,9 +28,21 @@ jobs:
 
     - name: Initialize Terraform
       run: terraform init
+      env:
+        AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        TF_VAR_github_app_id: ${{ vars.TF_VAR_GITHUB_APP_ID }}
+        TF_VAR_github_app_installation_id: ${{ vars.TF_VAR_GITHUB_APP_INSTALLATION_ID }}
+        TF_VAR_github_app_pem_file: ${{ secrets.TF_VAR_GITHUB_APP_PEM_FILE }}
 
     - name: Run Terraform Plan
       id: tf-plan
+      env:
+        AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        TF_VAR_github_app_id: ${{ vars.TF_VAR_GITHUB_APP_ID }}
+        TF_VAR_github_app_installation_id: ${{ vars.TF_VAR_GITHUB_APP_INSTALLATION_ID }}
+        TF_VAR_github_app_pem_file: ${{ secrets.TF_VAR_GITHUB_APP_PEM_FILE }}
       run: |
         export exitcode=0
         terraform plan -detailed-exitcode -no-color -out tfplan || export exitcode=$?
@@ -125,7 +133,7 @@ jobs:
              })
             }
             
-    # If changes aren't detected, close any open drift issues
+    # If changes aren't detected, close any open drift issues.
     - name: Publish Drift Report
       if: steps.tf-plan.outputs.exitcode == 0
       uses: actions/github-script@v7
@@ -155,7 +163,7 @@ jobs:
               })
             } 
              
-    # Mark the workflow as failed if drift detected 
+    # Mark the workflow as failed if drift detected.
     - name: Error on failure
       if: steps.tf-plan.outputs.exitcode == 2
       run: exit 1

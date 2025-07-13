@@ -1,5 +1,7 @@
-resource "null_resource" "hello_world" {
-  provisioner "local-exec" {
-    command = "echo Hello, World!"
-  }
+data "github_organization" "org" {
+  name = var.github_organization
+}
+
+module "users_and_teams" {
+  source = "./modules/users_and_teams"
 }

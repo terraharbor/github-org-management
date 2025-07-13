@@ -8,15 +8,11 @@ on:
     branches:
     - main
 
-# Special permissions required for OIDC authentication
+# Special permissions required for OIDC authentication.
 permissions:
   id-token: write
   contents: read
   pull-requests: write
-
-env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 jobs:
   terraform-plan:
@@ -35,6 +31,12 @@ jobs:
 
     - name: Initialize Terraform
       run: terraform init
+      env:
+        AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        TF_VAR_github_app_id: ${{ vars.TF_VAR_GITHUB_APP_ID }}
+        TF_VAR_github_app_installation_id: ${{ vars.TF_VAR_GITHUB_APP_INSTALLATION_ID }}
+        TF_VAR_github_app_pem_file: ${{ secrets.TF_VAR_GITHUB_APP_PEM_FILE }}
 
     # Checks that all Terraform configuration files adhere to a canonical format
     # Will fail the build if not
@@ -45,6 +47,12 @@ jobs:
     # An exit code of 0 indicated no changes, 1 a terraform failure, 2 there are pending changes.
     - name: Run Terraform Plan
       id: tf-plan
+      env:
+        AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        TF_VAR_github_app_id: ${{ vars.TF_VAR_GITHUB_APP_ID }}
+        TF_VAR_github_app_installation_id: ${{ vars.TF_VAR_GITHUB_APP_INSTALLATION_ID }}
+        TF_VAR_github_app_pem_file: ${{ secrets.TF_VAR_GITHUB_APP_PEM_FILE }}
       run: |
         export exitcode=0
         terraform plan -detailed-exitcode -no-color -out tfplan || export exitcode=$?
@@ -117,6 +125,12 @@ jobs:
 
     - name: Initialize Terraform
       run: terraform init
+      env:
+        AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        TF_VAR_github_app_id: ${{ vars.TF_VAR_GITHUB_APP_ID }}
+        TF_VAR_github_app_installation_id: ${{ vars.TF_VAR_GITHUB_APP_INSTALLATION_ID }}
+        TF_VAR_github_app_pem_file: ${{ secrets.TF_VAR_GITHUB_APP_PEM_FILE }}
 
     - name: Download Terraform Plan from GitHub Artifacts
       uses: actions/download-artifact@v4
@@ -124,4 +138,11 @@ jobs:
         name: tfplan
 
     - name: Run Terraform Apply
-      run: terraform apply -auto-approve tfplan
+      env:
+        AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        TF_VAR_github_app_id: ${{ vars.TF_VAR_GITHUB_APP_ID }}
+        TF_VAR_github_app_installation_id: ${{ vars.TF_VAR_GITHUB_APP_INSTALLATION_ID }}
+        TF_VAR_github_app_pem_file: ${{ secrets.TF_VAR_GITHUB_APP_PEM_FILE }}
+      run: |
+        terraform apply -auto-approve tfplan
