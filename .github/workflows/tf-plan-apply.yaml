@@ -17,7 +17,6 @@ permissions:
 env:
   AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
 jobs:
   terraform-plan:
     runs-on: ubuntu-latest
@@ -46,10 +45,13 @@ jobs:
     - name: Run Terraform Plan
       id: tf-plan
       env:
-        GITHUB_APP_ID: ${{ vars.TF_VAR_GITHUB_APP_ID }}
-        GITHUB_APP_INSTALLATION_ID: ${{ vars.TF_VAR_GITHUB_APP_INSTALLATION_ID }}
-        GITHUB_APP_PEM_FILE: ${{ secrets.TF_VAR_GITHUB_APP_PEM_FILE }}
+        TF_VAR_github_app_id: ${{ vars.TF_VAR_GITHUB_APP_ID }}
+        TF_VAR_github_app_installation_id: ${{ vars.TF_VAR_GITHUB_APP_INSTALLATION_ID }}
+        TF_VAR_github_app_pem_file: ${{ secrets.TF_VAR_GITHUB_APP_PEM_FILE }}
       run: |
+        unset GITHUB_OWNER
+        unset GITHUB_ORGANIZATION
+
         export exitcode=0
         terraform plan -detailed-exitcode -no-color -out tfplan || export exitcode=$?
 
@@ -129,7 +131,11 @@ jobs:
 
     - name: Run Terraform Apply
       env:
-        GITHUB_APP_ID: ${{ vars.TF_VAR_GITHUB_APP_ID }}
-        GITHUB_APP_INSTALLATION_ID: ${{ vars.TF_VAR_GITHUB_APP_INSTALLATION_ID }}
-        GITHUB_APP_PEM_FILE: ${{ secrets.TF_VAR_GITHUB_APP_PEM_FILE }}
-      run: terraform apply -auto-approve tfplan
+        TF_VAR_github_app_id: ${{ vars.TF_VAR_GITHUB_APP_ID }}
+        TF_VAR_github_app_installation_id: ${{ vars.TF_VAR_GITHUB_APP_INSTALLATION_ID }}
+        TF_VAR_github_app_pem_file: ${{ secrets.TF_VAR_GITHUB_APP_PEM_FILE }}
+      run: |
+        unset GITHUB_OWNER
+        unset GITHUB_ORGANIZATION
+
+        terraform apply -auto-approve tfplan
