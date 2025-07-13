@@ -48,6 +48,8 @@ jobs:
     # An exit code of 0 indicated no changes, 1 a terraform failure, 2 there are pending changes.
     - name: Run Terraform Plan
       id: tf-plan
+      env:
+        GITHUB_TOKEN: "" # Unset GITHUB_TOKEN to avoid causing issues with the GitHub App authentication.
       run: |
         export exitcode=0
         terraform plan -detailed-exitcode -no-color -out tfplan || export exitcode=$?
@@ -127,4 +129,6 @@ jobs:
         name: tfplan
 
     - name: Run Terraform Apply
+      env:
+        GITHUB_TOKEN: "" # Unset GITHUB_TOKEN to avoid causing issues with the GitHub App authentication.
       run: terraform apply -auto-approve tfplan
