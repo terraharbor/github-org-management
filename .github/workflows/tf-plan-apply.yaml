@@ -50,6 +50,7 @@ jobs:
       id: tf-plan
       env:
         GITHUB_TOKEN: "" # Unset GITHUB_TOKEN to avoid causing issues with the GitHub App authentication.
+        GITHUB_OWNER: "" # Unset GITHUB_OWNER to avoid causing issues with the GitHub App authentication.
       run: |
         export exitcode=0
         terraform plan -detailed-exitcode -no-color -out tfplan || export exitcode=$?
