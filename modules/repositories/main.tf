@@ -119,7 +119,7 @@ resource "github_repository_ruleset" "main_branch_protection_ruleset" {
 
   rules {
     creation                = true
-    update                  = true
+    update                  = false
     deletion                = true
     required_linear_history = false
     required_signatures     = true
