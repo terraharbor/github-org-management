@@ -23,6 +23,11 @@ resource "github_repository" "repository" {
   auto_init = true
 }
 
+# data "github_repository" "org_management" {
+#   # This is this repository itself, which is used to manage the organization.
+#   # For this reason, it is not included in the `github_repositories` local variable.
+# }
+
 resource "time_sleep" "wait_for_repo_creation" {
   for_each = resource.github_repository.repository
 
@@ -35,47 +40,6 @@ resource "github_branch_default" "main" {
   repository = each.value.name
   branch     = "main"
 }
-
-# data "github_app" "github_apps_automation" {
-#   for_each = toset(local.github_apps_automation)
-
-#   slug = each.value
-# }
-
-# data "github_user" "organization_owners" {
-#   for_each = toset(var.organization_owners)
-
-#   username = each.value
-# }
-
-# resource "github_branch_protection" "main_branch_protection" {
-#   for_each = resource.github_repository.repository
-
-#   repository_id = resource.github_repository.repository[each.key].id
-
-#   pattern = "main"
-
-#   enforce_admins = true
-
-#   require_signed_commits          = true
-#   required_linear_history         = false
-#   require_conversation_resolution = true
-
-#   allows_force_pushes  = false
-#   force_push_bypassers = [for v in var.organization_owners : "/${v}"]
-
-#   required_pull_request_reviews {
-#     dismiss_stale_reviews           = true
-#     require_code_owner_reviews      = true
-#     require_last_push_approval      = true
-#     required_approving_review_count = 1
-
-#     pull_request_bypassers = concat(
-#       [for v in local.github_apps_automation : data.github_app.github_apps_automation[v].node_id],
-#       [for v in var.organization_owners : "/${v}"]
-#     )
-#   }
-# }
 
 resource "github_repository_ruleset" "main_branch_protection_ruleset" {
   for_each = resource.github_repository.repository
@@ -305,6 +269,31 @@ resource "github_repository_file" "release_please" {
   file                = ".github/workflows/release-please.yml"
   content             = file("${path.module}/files/workflows/release-please.yaml")
   commit_message      = "ci: add/edit release-please.yaml"
+  overwrite_on_create = true
+  autocreate_branch   = true
+}
+
+# ---
+
+# Creation of the Renovate configuration file
+
+resource "github_repository_file" "renovate_config" {
+  for_each = {
+    for repo, attrib in local.github_repositories : repo => try(attrib.files.renovate_patches, "{}") if try(attrib.files.renovate, true)
+  }
+
+  depends_on = [resource.time_sleep.wait_for_repo_creation]
+
+  repository = each.key
+  branch     = "main"
+  file       = ".renovaterc.json"
+  content = jsonencode(
+    merge(
+      jsondecode("{}"),
+      jsondecode(each.value)
+    )
+  )
+  commit_message      = "chore: add/edit .renovaterc.json"
   overwrite_on_create = true
   autocreate_branch   = true
 }
