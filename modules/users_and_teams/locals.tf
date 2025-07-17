@@ -24,9 +24,9 @@ locals {
 
     # Group members go in the admin team.
     "Anthony-Christen" = ["admin"], # Anthony Christen
-    "Svelva"           = ["admin"], # Sven Ferreira Silva
+    "badisnt"          = ["admin"], # Badis Machraoui
     "fabricechapuis"   = ["admin"], # Fabrice Chapuis
-    # TODO Add Badi
+    "Svelva"           = ["admin"], # Sven Ferreira Silva
 
     # Professors and assistants go in the read team.
     "fmhanna"         = ["read"], # Fouad Hanna
