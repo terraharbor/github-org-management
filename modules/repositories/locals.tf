@@ -19,6 +19,26 @@ locals {
   #
 
   generic = {
+    ".github" = {
+      description = "Point of entry for the TerraHarbor organization"
+      topics      = ["terraharbor", "github"]
+      visibility  = "public"
+      files = {
+        github_workflows = false
+        release_please   = false
+        renovate         = false
+      }
+    },
+    project-management = {
+      description = "Repository for the general documentation and project management of the TerraHarbor organization"
+      topics      = ["terraharbor", "project-management"]
+      visibility  = "public"
+      files = {
+        github_workflows = false
+        release_please   = false
+        renovate         = false
+      }
+    },
     github-actions-workflows = {
       description = "GitHub Actions workflows for the TerraHarbor repositories"
       topics      = ["terraharbor", "github-actions"]
@@ -29,9 +49,19 @@ locals {
         github_workflows = false
       }
     },
-    helm = {
-      description = "Helm charts for deploying the TerraHarbor application in Kubernetes"
-      topics      = ["terraharbor", "kubernetes", "helm"]
+    application = {
+      description = "Main application repository for the TerraHarbor project"
+      topics      = ["terraharbor", "terraform-backend"]
+      visibility  = "public"
+    },
+    website = {
+      description = "Website repository for the TerraHarbor project"
+      topics      = ["terraharbor", "website"]
+      visibility  = "public"
+    },
+    infrastructure = {
+      description = "Infrastructure as Code repository for the TerraHarbor project"
+      topics      = ["terraharbor", "infrastructure"]
       visibility  = "public"
     }
   }
