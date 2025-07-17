@@ -21,5 +21,17 @@ locals {
   # Members of the organization and their respective teams.
   users = {
     # <username> = ["<team_name>", ...]
+
+    # Group members go in the admin team.
+    "Anthony-Christen" = ["admin"], # Anthony Christen
+    "Svelva"           = ["admin"], # Sven Ferreira Silva
+    "fabricechapuis"   = ["admin"], # Fabrice Chapuis
+    # TODO Add Badi
+
+    # Professors and assistants go in the read team.
+    "fmhanna"         = ["read"], # Fouad Hanna
+    "Ga-3tan"         = ["read"], # Gaétan Zwick
+    "GeraudSilvestri" = ["read"], # Géraud Silvestri
+    "Rostand"         = ["read"], # Rostand Mitouassiwou
   }
 }

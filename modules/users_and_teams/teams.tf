@@ -1,7 +1,7 @@
 # Owners team.
 resource "github_team" "owner" {
   name        = "owner"
-  description = "Organization owners"
+  description = "Organization owners."
   privacy     = "closed"
 }
 
