@@ -86,7 +86,7 @@ resource "github_repository_ruleset" "main_branch_protection_ruleset" {
     update                  = false
     deletion                = true
     required_linear_history = false
-    required_signatures     = true
+    required_signatures     = false
 
     pull_request {
       dismiss_stale_reviews_on_push     = true
