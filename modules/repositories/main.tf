@@ -238,7 +238,7 @@ resource "github_repository_file" "commits_checks" {
 
   repository          = each.value
   branch              = "main"
-  file                = ".github/workflows/commits-checks.yml"
+  file                = ".github/workflows/commits-checks.yaml"
   content             = file("${path.module}/files/workflows/commits-checks.yaml")
   commit_message      = "ci: add/edit commits-checks.yaml"
   overwrite_on_create = true
@@ -252,7 +252,7 @@ resource "github_repository_file" "pr_issues_project" {
 
   repository          = each.value
   branch              = "main"
-  file                = ".github/workflows/pr-issues-project.yml"
+  file                = ".github/workflows/pr-issues-project.yaml"
   content             = file("${path.module}/files/workflows/pr-issues-project.yaml")
   commit_message      = "ci: add/edit pr-issues-project.yaml"
   overwrite_on_create = true
@@ -266,7 +266,7 @@ resource "github_repository_file" "release_please" {
 
   repository          = each.value
   branch              = "main"
-  file                = ".github/workflows/release-please.yml"
+  file                = ".github/workflows/release-please.yaml"
   content             = file("${path.module}/files/workflows/release-please.yaml")
   commit_message      = "ci: add/edit release-please.yaml"
   overwrite_on_create = true
