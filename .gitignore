@@ -1,4 +1,6 @@
-secrets.yml
+# Manual exclusion of files and directories
+
+**/secrets.yml
 
 # Created by https://www.toptal.com/developers/gitignore/api/linux,macos,visualstudiocode,terraform
 # Edit at https://www.toptal.com/developers/gitignore?templates=linux,macos,visualstudiocode,terraform
