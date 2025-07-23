@@ -1,12 +1,12 @@
 terraform {
   required_version = ">= 1.10"
 
-  backend "s3" {
-    bucket       = "atomp-tf-states"
-    key          = "terraharbor-tf-states/github-org-management/terraform.tfstate"
-    use_lockfile = true
-    encrypt      = true
-    region       = "eu-west-1"
+  backend "azurerm" {
+    # This Storage Account and Container must already exist. They were created manually.
+    resource_group_name  = "remote-terraform-states-rg"
+    storage_account_name = "terraformstates864fc5e1"
+    container_name       = "terraharbor-project"
+    key                  = "pdg-terraharbor-github-org-management.tfstate"
   }
 
   required_providers {
