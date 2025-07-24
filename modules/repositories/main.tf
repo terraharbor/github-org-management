@@ -225,14 +225,10 @@ resource "github_repository_file" "codeowners" {
 
 # Creation of the default GitHub Actions workflows
 
-locals {
-  github_actions_repository = toset([
-    for repo, attrib in local.github_repositories : repo if try(attrib.files.github_workflows, true)
-  ])
-}
-
 resource "github_repository_file" "commits_checks" {
-  for_each = local.github_actions_repository
+  for_each = toset([
+    for repo, attrib in local.github_repositories : repo if try(attrib.files.github_workflows.commits_checks, true)
+  ])
 
   depends_on = [resource.time_sleep.wait_for_repo_creation]
 
@@ -246,7 +242,9 @@ resource "github_repository_file" "commits_checks" {
 }
 
 resource "github_repository_file" "pr_issues_project" {
-  for_each = local.github_actions_repository
+  for_each = toset([
+    for repo, attrib in local.github_repositories : repo if try(attrib.files.github_workflows.pr_issues_project, true)
+  ])
 
   depends_on = [resource.time_sleep.wait_for_repo_creation]
 
@@ -260,7 +258,9 @@ resource "github_repository_file" "pr_issues_project" {
 }
 
 resource "github_repository_file" "release_please" {
-  for_each = local.github_actions_repository
+  for_each = toset([
+    for repo, attrib in local.github_repositories : repo if try(attrib.files.github_workflows.release_please, true)
+  ])
 
   depends_on = [resource.time_sleep.wait_for_repo_creation]
 
@@ -269,6 +269,22 @@ resource "github_repository_file" "release_please" {
   file                = ".github/workflows/release-please.yaml"
   content             = file("${path.module}/files/workflows/release-please.yaml")
   commit_message      = "ci: add/edit release-please.yaml"
+  overwrite_on_create = true
+  autocreate_branch   = true
+}
+
+resource "github_repository_file" "docker_build" {
+  for_each = toset([
+    for repo, attrib in local.github_repositories : repo if try(attrib.files.github_workflows.docker_build, true)
+  ])
+
+  depends_on = [resource.time_sleep.wait_for_repo_creation]
+
+  repository          = each.value
+  branch              = "main"
+  file                = ".github/workflows/docker-build.yaml"
+  content             = file("${path.module}/files/workflows/docker-build.yaml")
+  commit_message      = "ci: add/edit docker-build.yaml"
   overwrite_on_create = true
   autocreate_branch   = true
 }
@@ -324,7 +340,7 @@ resource "github_repository_file" "release_please_manifest" {
 
 resource "github_repository_file" "release_please_config" {
   for_each = {
-    for repo, attrib in local.generic : repo => try(attrib.files.release_please_patches, "{}") if try(attrib.files.release_please, true)
+    for repo, attrib in local.github_repositories : repo => try(attrib.files.release_please_patches, "{}") if try(attrib.files.release_please, true)
   }
 
   depends_on = [resource.time_sleep.wait_for_repo_creation]
