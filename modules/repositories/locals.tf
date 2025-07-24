@@ -54,14 +54,24 @@ locals {
       topics      = ["terraharbor", "terraform-backend"]
       visibility  = "public"
     },
+    frontend = {
+      description = "Frontend of the TerraHarbor application written in React"
+      topics      = ["terraharbor", "terraform-backend", "react", "docker"]
+      visibility  = "public"
+    },
+    backend = {
+      description = "Backend of the TerraHarbor application written in Python and using FastAPI"
+      topics      = ["terraharbor", "terraform-backend", "python", "fastapi", "docker"]
+      visibility  = "public"
+    },
     website = {
       description = "Website repository for the TerraHarbor project"
-      topics      = ["terraharbor", "website"]
+      topics      = ["terraharbor", "website", "github-pages"]
       visibility  = "public"
     },
     infrastructure = {
       description = "Infrastructure as Code repository for the TerraHarbor project"
-      topics      = ["terraharbor", "infrastructure"]
+      topics      = ["terraharbor", "infrastructure", "iac", "terraform", "ansible", "docker-compose"]
       visibility  = "public"
     }
   }
