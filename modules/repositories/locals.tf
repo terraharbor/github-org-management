@@ -1,12 +1,4 @@
 locals {
-
-  github_workflows_disabled = {
-    commits_checks    = false
-    pr_issues_project = false
-    release_please    = false
-    docker_build      = false
-  }
-
   # Structure for the repositories' definitions:
   #
   # repository_name = {
@@ -31,9 +23,11 @@ locals {
       topics      = ["terraharbor", "terraform", "github"]
       visibility  = "public"
       files = {
-        github_workflows = local.github_workflows_disabled
-        release_please   = false
-        renovate         = false
+        github_workflows = {
+          release_please = false
+          docker_build   = false
+        }
+        release_please = false
       }
     },
   }
@@ -44,9 +38,12 @@ locals {
       topics      = ["terraharbor", "github"]
       visibility  = "public"
       files = {
-        github_workflows = local.github_workflows_disabled
-        release_please   = false
-        renovate         = false
+        github_workflows = {
+          release_please = false
+          docker_build   = false
+        }
+        release_please = false
+        renovate       = false
       }
     },
     project-management = {
@@ -54,9 +51,12 @@ locals {
       topics      = ["terraharbor", "project-management"]
       visibility  = "public"
       files = {
-        github_workflows = local.github_workflows_disabled
-        release_please   = false
-        renovate         = false
+        github_workflows = {
+          release_please = false
+          docker_build   = false
+        }
+        release_please = false
+        renovate       = false
       }
     },
     github-actions-workflows = {
@@ -66,7 +66,12 @@ locals {
       files = {
         # Disable the creation of the GitHub Actions workflows for this repository, because it's the one that contains 
         # the workflows that are called by the other repositories.
-        github_workflows = local.github_workflows_disabled
+        github_workflows = {
+          commits_checks    = false
+          pr_issues_project = false
+          release_please    = false
+          docker_build      = false
+        }
       }
     },
     application = {

@@ -29,9 +29,9 @@ locals {
     "Svelva"           = ["admin"], # Sven Ferreira Silva
 
     # Professors and assistants go in the read team.
-    "fmhanna"         = ["read"], # Fouad Hanna
-    "Ga-3tan"         = ["read"], # Gaétan Zwick
-    "GeraudSilvestri" = ["read"], # Géraud Silvestri
-    "Rostand"         = ["read"], # Rostand Mitouassiwou
+    "fmhanna" = ["read"], # Fouad Hanna
+    "Ga-3tan" = ["read"], # Gaétan Zwick
+    # "GeraudSilvestri" = ["read"], # Géraud Silvestri
+    # "Rostand"         = ["read"], # Rostand Mitouassiwou
   }
 }
