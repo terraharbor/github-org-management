@@ -25,7 +25,20 @@ locals {
   # }
   #
 
-  generic = {
+  protected_repositories = {
+    github-org-management = {
+      description = "Repository containing the Terraform code to manage this GitHub organization"
+      topics      = ["terraharbor", "terraform", "github"]
+      visibility  = "public"
+      files = {
+        github_workflows = local.github_workflows_disabled
+        release_please   = false
+        renovate         = false
+      }
+    },
+  }
+
+  generic_repositories = {
     ".github" = {
       description = "Point of entry for the TerraHarbor organization"
       topics      = ["terraharbor", "github"]
@@ -94,7 +107,7 @@ locals {
   }
 
   # Merge all the repositories into a single map.
-  github_repositories = merge(local.generic)
+  github_repositories = merge(local.generic_repositories)
 
   github_apps_automation = [
     1596572, # terraharbor-administrator

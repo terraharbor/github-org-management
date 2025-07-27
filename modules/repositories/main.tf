@@ -1,4 +1,34 @@
-# Creation of the repositories
+resource "github_repository" "protected_repository" {
+  for_each = local.protected_repositories
+
+  name         = each.key
+  description  = each.value.description
+  homepage_url = "https://terraharbor.cloud" # TODO Define a proper homepage URL for the project.
+  topics       = each.value.topics
+
+  visibility = each.value.visibility
+
+  has_issues      = true
+  has_projects    = true
+  has_discussions = false
+  has_wiki        = false
+
+  allow_merge_commit          = true
+  allow_squash_merge          = true
+  allow_rebase_merge          = false
+  delete_branch_on_merge      = true
+  merge_commit_message        = "PR_TITLE"
+  merge_commit_title          = "MERGE_MESSAGE"
+  squash_merge_commit_message = "BLANK"
+  squash_merge_commit_title   = "PR_TITLE"
+
+  auto_init = false # Do not auto-init the repository, as it is already created and protected.
+
+  lifecycle {
+    # Prevent the destruction of the protected repositories, because they are critical for this Terraform code.
+    prevent_destroy = true
+  }
+}
 
 resource "github_repository" "repository" {
   for_each = local.github_repositories
@@ -19,14 +49,13 @@ resource "github_repository" "repository" {
   allow_squash_merge     = true
   allow_rebase_merge     = false
   delete_branch_on_merge = true
+  # merge_commit_message        = "PR_TITLE"
+  # merge_commit_title          = "MERGE_MESSAGE"
+  # squash_merge_commit_message = "BLANK"
+  # squash_merge_commit_title   = "PR_TITLE"
 
   auto_init = true
 }
-
-# data "github_repository" "org_management" {
-#   # This is this repository itself, which is used to manage the organization.
-#   # For this reason, it is not included in the `github_repositories` local variable.
-# }
 
 resource "time_sleep" "wait_for_repo_creation" {
   for_each = resource.github_repository.repository
