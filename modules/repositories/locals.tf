@@ -28,6 +28,8 @@ locals {
           docker_build   = false
         }
         release_please = false
+        license        = false
+        codeowners     = false
       }
     },
   }
@@ -112,7 +114,11 @@ locals {
   }
 
   # Merge all the repositories into a single map.
-  github_repositories = merge(local.generic_repositories)
+  github_repositories = merge(local.protected_repositories, local.generic_repositories)
+
+  # Repositories that are not protected, i.e., not using the `github_repository_protected` resource.
+  # These repositories are created with the `github_repository` resource.
+  unprotected_repositories = merge(local.generic_repositories)
 
   github_apps_automation = [
     1596572, # terraharbor-administrator

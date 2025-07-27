@@ -31,7 +31,7 @@ resource "github_repository" "protected_repository" {
 }
 
 resource "github_repository" "repository" {
-  for_each = local.github_repositories
+  for_each = local.unprotected_repositories
 
   name         = each.key
   description  = each.value.description
@@ -58,24 +58,24 @@ resource "github_repository" "repository" {
 }
 
 resource "time_sleep" "wait_for_repo_creation" {
-  for_each = resource.github_repository.repository
+  for_each = merge(resource.github_repository.repository, resource.github_repository.protected_repository)
 
   create_duration = "30s"
 }
 
 resource "github_branch_default" "main" {
-  for_each = resource.github_repository.repository
+  for_each = merge(resource.github_repository.repository, resource.github_repository.protected_repository)
 
   repository = each.value.name
   branch     = "main"
 }
 
 resource "github_repository_ruleset" "main_branch_protection_ruleset" {
-  for_each = resource.github_repository.repository
+  for_each = merge(resource.github_repository.repository, resource.github_repository.protected_repository)
 
   name = "main protection"
 
-  repository  = resource.github_repository.repository[each.key].name
+  repository  = each.value.name
   target      = "branch"
   enforcement = "active"
 
@@ -132,46 +132,46 @@ resource "github_repository_ruleset" "main_branch_protection_ruleset" {
 # Addition of teams with default permission to the repositories
 
 resource "github_team_repository" "read" {
-  for_each = resource.github_repository.repository
+  for_each = merge(resource.github_repository.repository, resource.github_repository.protected_repository)
 
   team_id    = var.default_teams_ids["read"]
-  repository = resource.github_repository.repository[each.key].name
+  repository = each.value.name
 
   permission = "pull"
 }
 
 resource "github_team_repository" "triage" {
-  for_each = resource.github_repository.repository
+  for_each = merge(resource.github_repository.repository, resource.github_repository.protected_repository)
 
   team_id    = var.default_teams_ids["triage"]
-  repository = resource.github_repository.repository[each.key].name
+  repository = each.value.name
 
   permission = "triage"
 }
 
 resource "github_team_repository" "write" {
-  for_each = resource.github_repository.repository
+  for_each = merge(resource.github_repository.repository, resource.github_repository.protected_repository)
 
   team_id    = var.default_teams_ids["write"]
-  repository = resource.github_repository.repository[each.key].name
+  repository = each.value.name
 
   permission = "push"
 }
 
 resource "github_team_repository" "maintain" {
-  for_each = resource.github_repository.repository
+  for_each = merge(resource.github_repository.repository, resource.github_repository.protected_repository)
 
   team_id    = var.default_teams_ids["maintain"]
-  repository = resource.github_repository.repository[each.key].name
+  repository = each.value.name
 
   permission = "maintain"
 }
 
 resource "github_team_repository" "admin" {
-  for_each = resource.github_repository.repository
+  for_each = merge(resource.github_repository.repository, resource.github_repository.protected_repository)
 
   team_id    = var.default_teams_ids["admin"]
-  repository = resource.github_repository.repository[each.key].name
+  repository = each.value.name
 
   permission = "admin"
 }
@@ -186,7 +186,7 @@ resource "github_actions_organization_secret_repositories" "organization_secrets
   for_each = toset(local.organization_secrets)
 
   secret_name             = each.value
-  selected_repository_ids = [for repo in resource.github_repository.repository : repo.repo_id]
+  selected_repository_ids = [for repo in merge(resource.github_repository.repository, resource.github_repository.protected_repository) : repo.repo_id]
 }
 
 # ---
@@ -194,9 +194,9 @@ resource "github_actions_organization_secret_repositories" "organization_secrets
 # Creation of default labels for all repositories
 
 resource "github_issue_labels" "default_labels" {
-  for_each = resource.github_repository.repository
+  for_each = merge(resource.github_repository.repository, resource.github_repository.protected_repository)
 
-  repository = resource.github_repository.repository[each.key].name
+  repository = each.value.name
 
   dynamic "label" {
     for_each = { for k, v in local.default_labels : k => v if v.description == null }
@@ -222,11 +222,13 @@ resource "github_issue_labels" "default_labels" {
 
 # Creation of commonly used files
 resource "github_repository_file" "license" {
-  for_each = resource.github_repository.repository
+  for_each = toset([
+    for repo, attrib in local.github_repositories : repo if try(attrib.files.license, true)
+  ])
 
   depends_on = [resource.time_sleep.wait_for_repo_creation]
 
-  repository          = each.value.name
+  repository          = each.value
   branch              = "main"
   file                = "LICENSE.txt"
   content             = file("${path.module}/files/LICENSE.txt")
@@ -235,13 +237,14 @@ resource "github_repository_file" "license" {
   autocreate_branch   = true
 }
 
-
 resource "github_repository_file" "codeowners" {
-  for_each = resource.github_repository.repository
+  for_each = toset([
+    for repo, attrib in local.github_repositories : repo if try(attrib.files.codeowners, true)
+  ])
 
   depends_on = [resource.time_sleep.wait_for_repo_creation]
 
-  repository          = each.value.name
+  repository          = each.value
   branch              = "main"
   file                = ".github/CODEOWNERS"
   content             = file("${path.module}/files/CODEOWNERS")
