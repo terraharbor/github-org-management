@@ -152,7 +152,7 @@ jobs:
         TF_VAR_github_app_pem_file: ${{ secrets.TF_VAR_GITHUB_APP_PEM_FILE }}
 
     - name: Download Terraform Plan from GitHub Artifacts
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: tfplan
 
