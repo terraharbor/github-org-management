@@ -76,11 +76,6 @@ locals {
         }
       }
     },
-    application = {
-      description = "Main application repository for the TerraHarbor project"
-      topics      = ["terraharbor", "terraform-backend"]
-      visibility  = "public"
-    },
     frontend = {
       description = "Frontend of the TerraHarbor application written in React"
       topics      = ["terraharbor", "terraform-backend", "react", "docker"]
