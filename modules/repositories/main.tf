@@ -55,6 +55,12 @@ resource "github_repository" "repository" {
   # squash_merge_commit_title   = "PR_TITLE"
 
   auto_init = true
+
+  lifecycle {
+    ignore_changes = [
+      pages
+    ]
+  }
 }
 
 resource "time_sleep" "wait_for_repo_creation" {
