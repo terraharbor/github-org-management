@@ -92,7 +92,8 @@ locals {
       visibility  = "public"
       files = {
         github_workflows = {
-          docker_build = false
+          release_please = false
+          docker_build   = false
         }
       }
     },
