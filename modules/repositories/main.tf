@@ -3,7 +3,7 @@ resource "github_repository" "protected_repository" {
 
   name         = each.key
   description  = each.value.description
-  homepage_url = "https://terraharbor.cloud" # TODO Define a proper homepage URL for the project.
+  homepage_url = "https://terraharbor.github.io/website/"
   topics       = each.value.topics
 
   visibility = each.value.visibility
@@ -35,7 +35,7 @@ resource "github_repository" "repository" {
 
   name         = each.key
   description  = each.value.description
-  homepage_url = "https://terraharbor.cloud" # TODO Define a proper homepage URL for the project.
+  homepage_url = "https://terraharbor.github.io/website/"
   topics       = each.value.topics
 
   visibility = each.value.visibility
