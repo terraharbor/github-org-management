@@ -106,6 +106,19 @@ locals {
           docker_build = false
         }
       }
+    },
+    demo = {
+      description = "Repository containing demonstration material for the TerraHarbor project"
+      topics      = ["terraharbor", "demo"]
+      visibility  = "public"
+      files = {
+        github_workflows = {
+          release_please = false
+          docker_build   = false
+        }
+        release_please = false
+        renovate       = false
+      }
     }
   }
 
